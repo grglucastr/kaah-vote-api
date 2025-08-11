@@ -60,6 +60,23 @@ func (app *application) getCandidatePoliciesHandler(w http.ResponseWriter, r *ht
 	}
 }
 
+func (app *application) getSessionStatesHandler(w http.ResponseWriter, r *http.Request) {
+	qs := r.URL.Query()
+	filters := app.HandleSettingFilters(qs)
+	policies, metadata, err := app.models.State.ListFiltering(filters)
+
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"metadata": metadata, "policies": policies}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+}
+
 func (app *application) HandleSettingFilters(qs url.Values) *data.SettingsFilters {
 	name := app.readString(qs, "name", "")
 	createdFrom := app.readDate(qs, "createdFrom")
