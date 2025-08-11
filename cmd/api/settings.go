@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"net/url"
 
 	"github.com/kaahvote/backend-service-api/internal/data"
 	"github.com/kaahvote/backend-service-api/internal/validator"
@@ -10,7 +11,39 @@ import (
 func (app *application) getVotingPoliciesHandler(w http.ResponseWriter, r *http.Request) {
 
 	qs := r.URL.Query()
+	filters := app.HandleSettingFilters(qs)
+	policies, metadata, err := app.models.VotingPolicy.ListFiltering(filters)
 
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"metadata": metadata, "policies": policies}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+}
+
+func (app *application) getVoterPoliciesHandler(w http.ResponseWriter, r *http.Request) {
+	qs := r.URL.Query()
+	filters := app.HandleSettingFilters(qs)
+	policies, metadata, err := app.models.VoterPolicy.ListFiltering(filters)
+
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"metadata": metadata, "policies": policies}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+}
+
+func (app *application) HandleSettingFilters(qs url.Values) *data.SettingsFilters {
 	name := app.readString(qs, "name", "")
 	createdFrom := app.readDate(qs, "createdFrom")
 	createdTo := app.readDate(qs, "createdTo")
@@ -20,7 +53,7 @@ func (app *application) getVotingPoliciesHandler(w http.ResponseWriter, r *http.
 	pageSize := app.readInt(qs, "pageSize", 5, v)
 	sort := app.readString(qs, "sort", "createdAt")
 
-	filters := data.SettingsFilters{
+	filters := &data.SettingsFilters{
 		Name:          name,
 		CreatedAtFrom: createdFrom,
 		CreatedAtTo:   createdTo,
@@ -32,15 +65,5 @@ func (app *application) getVotingPoliciesHandler(w http.ResponseWriter, r *http.
 		},
 	}
 
-	policies, metadata, err := app.models.VotingPolicy.ListFiltering(filters)
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-		return
-	}
-
-	err = app.writeJSON(w, http.StatusOK, envelope{"metadata": metadata, "policies": policies}, nil)
-	if err != nil {
-		app.serverErrorResponse(w, r, err)
-		return
-	}
+	return filters
 }

@@ -15,7 +15,7 @@ type VotingPolicyModel struct {
 	DB *sql.DB
 }
 
-func (m *VotingPolicyModel) ListFiltering(filters SettingsFilters) ([]*VotingPolicy, Metadata, error) {
+func (m *VotingPolicyModel) ListFiltering(filters *SettingsFilters) ([]*VotingPolicy, Metadata, error) {
 	query := fmt.Sprintf(`SELECT COUNT(*) OVER(), id, name, created_at 
 			  FROM voting_policies
 			  WHERE 1=1

@@ -14,6 +14,7 @@ type Models struct {
 	Flows        FlowModel
 	Users        UserModel
 	VotingPolicy VotingPolicyModel
+	VoterPolicy  VoterPolicyModel
 }
 
 func NewModels(db *sql.DB) Models {
@@ -22,5 +23,6 @@ func NewModels(db *sql.DB) Models {
 		Flows:        FlowModel{DB: db},
 		Users:        UserModel{DB: db},
 		VotingPolicy: VotingPolicyModel{DB: db},
+		VoterPolicy:  VoterPolicyModel{DB: db},
 	}
 }

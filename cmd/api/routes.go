@@ -25,7 +25,9 @@ func (app *application) routes() http.Handler {
 
 	routes.HandlerFunc(http.MethodGet, "/v1/users/:user_public_id/sessions", app.getUserSessionsHandler)
 
+	// Settings
 	routes.HandlerFunc(http.MethodGet, "/v1/voting-policies", app.getVotingPoliciesHandler)
+	routes.HandlerFunc(http.MethodGet, "/v1/voter-policies", app.getVoterPoliciesHandler)
 
 	return routes
 }
