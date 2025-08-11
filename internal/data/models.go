@@ -10,15 +10,17 @@ var (
 )
 
 type Models struct {
-	Sessions SessionModel
-	Flows    FlowModel
-	Users    UserModel
+	Sessions     SessionModel
+	Flows        FlowModel
+	Users        UserModel
+	VotingPolicy VotingPolicyModel
 }
 
 func NewModels(db *sql.DB) Models {
 	return Models{
-		Sessions: SessionModel{DB: db},
-		Flows:    FlowModel{DB: db},
-		Users:    UserModel{DB: db},
+		Sessions:     SessionModel{DB: db},
+		Flows:        FlowModel{DB: db},
+		Users:        UserModel{DB: db},
+		VotingPolicy: VotingPolicyModel{DB: db},
 	}
 }
