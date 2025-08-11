@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/kaahvote/backend-service-api/internal/data"
 )
@@ -35,6 +36,7 @@ func (app *application) postSessionCandidatesHandler(w http.ResponseWriter, r *h
 		Name:      input.Name,
 		UserID:    input.UserID,
 		SessionID: session.ID,
+		CreatedAt: time.Now(),
 	}
 
 	// TODO: add validation for candidate fields

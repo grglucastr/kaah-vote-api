@@ -45,6 +45,10 @@ type SettingsFilters struct {
 	Filters
 }
 
+type CandidateFilters struct {
+	Name string
+}
+
 func calculateMetadata(totalRecords, page, pageSize int) Metadata {
 	if totalRecords == 0 {
 		return Metadata{}
