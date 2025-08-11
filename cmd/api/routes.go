@@ -28,6 +28,7 @@ func (app *application) routes() http.Handler {
 	// Settings
 	routes.HandlerFunc(http.MethodGet, "/v1/voting-policies", app.getVotingPoliciesHandler)
 	routes.HandlerFunc(http.MethodGet, "/v1/voter-policies", app.getVoterPoliciesHandler)
+	routes.HandlerFunc(http.MethodGet, "/v1/candidate-policies", app.getCandidatePoliciesHandler)
 
 	return routes
 }
