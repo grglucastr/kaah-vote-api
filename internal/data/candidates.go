@@ -89,8 +89,6 @@ func (m CandidateModel) Get(id int64) (*Candidate, error) {
 
 	err := m.DB.QueryRowContext(ctx, query, id).Scan(&c.ID, &c.Name, &c.UserID, &c.CreatedAt)
 
-	fmt.Printf("Error: %+v\n\n", err)
-
 	if err != nil {
 		switch err {
 		case sql.ErrNoRows:
