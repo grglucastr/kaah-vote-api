@@ -77,3 +77,32 @@ func (m CandidateModel) ListFiltering(filters *CandidateFilters) ([]*Candidate, 
 
 	return candidates, metadata, nil
 }
+
+func (m CandidateModel) Get(id int64) (*Candidate, error) {
+	query := `SELECT id, name, user_id, created_at FROM candidates WHERE id = $1`
+
+	ctx, cancel := context.WithTimeout(context.Background(), THREE_SECONDS)
+	defer cancel()
+
+	var c Candidate
+	var imgURL sql.NullString
+
+	err := m.DB.QueryRowContext(ctx, query, id).Scan(&c.ID, &c.Name, &c.UserID, &c.CreatedAt)
+
+	fmt.Printf("Error: %+v\n\n", err)
+
+	if err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			return nil, ErrRecordNotFound
+		default:
+			return nil, err
+		}
+	}
+
+	if imgURL.Valid {
+		c.ImageURL = imgURL.String
+	}
+
+	return &c, nil
+}

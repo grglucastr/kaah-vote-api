@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/kaahvote/backend-service-api/internal/data"
@@ -108,4 +109,35 @@ func (app *application) getSessionCandidatesHandler(w http.ResponseWriter, r *ht
 
 func (app *application) deleteSessionCandidateHandler(w http.ResponseWriter, r *http.Request) {
 
+}
+
+func (app *application) getSingleCandidatesHandler(w http.ResponseWriter, r *http.Request) {
+	_, err := app.getSession(r)
+	if err != nil {
+		app.handleErrToNotFound(w, r, err)
+		return
+	}
+
+	candidatedID, err := strconv.Atoi(app.readStringParam(r, "candidate_id"))
+
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	if candidatedID < 1 {
+		app.notFoundResponse(w, r)
+		return
+	}
+
+	candidate, err := app.models.Candidate.Get(int64(candidatedID))
+	if err != nil {
+		app.notFoundResponse(w, r)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"candidate": candidate}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
 }
