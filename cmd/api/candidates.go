@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/kaahvote/backend-service-api/internal/data"
+	"github.com/kaahvote/backend-service-api/internal/validator"
 )
 
 func (app *application) postSessionCandidatesHandler(w http.ResponseWriter, r *http.Request) {
@@ -58,6 +59,50 @@ func (app *application) postSessionCandidatesHandler(w http.ResponseWriter, r *h
 }
 
 func (app *application) getSessionCandidatesHandler(w http.ResponseWriter, r *http.Request) {
+
+	session, err := app.getSession(r)
+	if err != nil {
+		app.handleErrToNotFound(w, r, err)
+		return
+	}
+
+	qs := r.URL.Query()
+
+	name := app.readString(qs, "name", "")
+
+	v := validator.New()
+	page := app.readInt(qs, "currentPage", 1, v)
+	pageSize := app.readInt(qs, "pageSize", 5, v)
+	sort := app.readString(qs, "sort", "createdAt")
+
+	if !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	filters := &data.CandidateFilters{
+		Name:      name,
+		SessionID: session.ID,
+		Filters: data.Filters{
+			Page:         page,
+			PageSize:     pageSize,
+			Sort:         sort,
+			SortSafeList: []string{"name", "-name", "createdAt", "-createdAt"},
+		},
+	}
+
+	//TODO: validate the filters, sort safe list
+
+	candidates, metadata, err := app.models.Candidate.ListFiltering(filters)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"candidates": candidates, "metadata": metadata}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
 
 }
 

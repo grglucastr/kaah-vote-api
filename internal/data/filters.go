@@ -46,7 +46,9 @@ type SettingsFilters struct {
 }
 
 type CandidateFilters struct {
-	Name string
+	Name      string
+	SessionID int64
+	Filters
 }
 
 func calculateMetadata(totalRecords, page, pageSize int) Metadata {
