@@ -12,7 +12,7 @@ type Candidate struct {
 	Name      string    `json:"name"`
 	ImageURL  string    `json:"imageUrl"`
 	UserID    int64     `json:"userId"`
-	SessionID int64     `json:"sessionId"`
+	SessionID int64     `json:"sessionId,omitzero"`
 	CreatedAt time.Time `json:"createdAt"`
 }
 
