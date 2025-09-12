@@ -39,7 +39,11 @@ func (m CandidateModel) ListFiltering(filters *CandidateFilters) ([]*Candidate, 
 							FROM candidates
 							WHERE 1=1
 							AND session_id = $1
-							AND to_tsvector('simple', name) @@ plainto_tsquery('simple', $2) OR $2 = '' OR $2 IS NULL
+							AND (
+									(to_tsvector('simple', name) @@ plainto_tsquery('simple', $2))
+									OR ($2 = '') 
+									OR ($2 IS NULL)
+								)
 							ORDER BY %s %s, id ASC
 							LIMIT $3 OFFSET $4`, filters.sortColumn(), filters.sortDirection())
 
