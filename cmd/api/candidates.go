@@ -112,11 +112,6 @@ func (app *application) deleteSessionCandidateHandler(w http.ResponseWriter, r *
 }
 
 func (app *application) getSingleCandidatesHandler(w http.ResponseWriter, r *http.Request) {
-	_, err := app.getSession(r)
-	if err != nil {
-		app.handleErrToNotFound(w, r, err)
-		return
-	}
 
 	candidatedID, err := strconv.Atoi(app.readStringParam(r, "candidate_id"))
 
