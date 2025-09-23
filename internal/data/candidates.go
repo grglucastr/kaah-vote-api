@@ -108,3 +108,25 @@ func (m CandidateModel) Get(id int64) (*Candidate, error) {
 
 	return &c, nil
 }
+
+func (m CandidateModel) Delete(id int64) (*int64, error) {
+
+	query := `DELETE FROM candidates WHERE id = $1`
+
+	ctx, cancel := context.WithTimeout(context.Background(), THREE_SECONDS)
+
+	defer cancel()
+
+	rows, err := m.DB.ExecContext(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+
+	numberRows, err := rows.RowsAffected()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &numberRows, nil
+}

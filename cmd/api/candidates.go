@@ -109,6 +109,33 @@ func (app *application) getSessionCandidatesHandler(w http.ResponseWriter, r *ht
 
 func (app *application) deleteSessionCandidateHandler(w http.ResponseWriter, r *http.Request) {
 
+	candidateId := app.readStringParam(r, "candidate_id")
+
+	cId, err := strconv.Atoi(candidateId)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	rows, err := app.models.Candidate.Delete(int64(cId))
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	if rows != nil {
+		if *rows == 0 {
+			app.notFoundResponse(w, r)
+			return
+		}
+
+		err = app.writeJSON(w, http.StatusOK, envelope{"deleted": true}, nil)
+		if err != nil {
+			app.serverErrorResponse(w, r, err)
+			return
+		}
+		return
+	}
 }
 
 func (app *application) getSingleCandidatesHandler(w http.ResponseWriter, r *http.Request) {
