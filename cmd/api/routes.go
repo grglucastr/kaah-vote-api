@@ -25,6 +25,9 @@ func (app *application) routes() http.Handler {
 
 	routes.HandlerFunc(http.MethodGet, "/v1/users/:user_public_id/sessions", app.getUserSessionsHandler)
 
+	// Votes
+	routes.HandlerFunc(http.MethodPost, "/v1/votes", app.registerVote)
+
 	// Candidates
 	routes.HandlerFunc(http.MethodGet, "/v1/sessions/:session_public_id/candidates", app.getSessionCandidatesHandler)
 	routes.HandlerFunc(http.MethodGet, "/v1/candidates/:candidate_id", app.getSingleCandidatesHandler)
