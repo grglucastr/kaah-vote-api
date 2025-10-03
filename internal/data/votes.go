@@ -7,10 +7,10 @@ import (
 )
 
 type Vote struct {
-	VoterID     int64     `json:"voterId"`
-	CandidateID int64     `json:"candidateId"`
-	SessionID   int64     `json:"-"`
-	CreatedAt   time.Time `json:"createdAt"`
+	VoterID     *int64     `json:"voterId"`
+	CandidateID *int64     `json:"candidateId"`
+	SessionID   *int64     `json:"-"`
+	CreatedAt   *time.Time `json:"createdAt"`
 }
 
 type VoteModel struct {
