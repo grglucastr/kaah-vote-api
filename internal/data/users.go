@@ -44,3 +44,16 @@ func (m UserModel) Get(publicID string) (*User, error) {
 
 	return &user, nil
 }
+
+func (m UserModel) Insert(u *User) error {
+	query := `INSERT INTO users (public_id, name, email, password) 
+				VALUES ($1, $2, $3, $4) 
+				RETURNING id, created_at`
+	args := []any{u.PublicID, u.Name, u.Email, u.Password}
+
+	ctx, cancel := context.WithTimeout(context.Background(), THREE_SECONDS)
+
+	defer cancel()
+
+	return m.DB.QueryRowContext(ctx, query, args...).Scan(&u.ID, &u.CreatedAt)
+}
